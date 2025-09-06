@@ -1,7 +1,7 @@
 // app/page.tsx (Next.js 13+ App Router)
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Pill, FileText, ClipboardList } from "lucide-react"
+import { Pill, FileText, ClipboardList, Eye, User } from "lucide-react"
 import Link from "next/link"
 
 export default function Home() {
@@ -18,12 +18,25 @@ export default function Home() {
       icon: <ClipboardList className="w-8 h-8 text-green-600" />,
       href: "/possible",
     },
+
     {
       title: "Report ADR",
       description: "Submit your own obervations view reports (login required).",
       icon: <FileText className="w-8 h-8 text-green-600" />,
-      href: "/report",
+      href: "/submit-report",
       protected: true,
+    },
+    {
+      title: "View Reports",
+      description: "Browse previously submitted ADR reports by other users.",
+      icon: <Eye className="w-8 h-8 text-green-600" />,
+      href: "/view-reports",
+    },
+    {
+      title: "About",
+      description: "Know more about the pharmacist behind this platform.",
+      icon: <User className="w-8 h-8 text-green-600" />,
+      href: "/about",
     },
   ]
 

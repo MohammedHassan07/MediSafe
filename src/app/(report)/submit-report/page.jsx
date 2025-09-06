@@ -15,7 +15,7 @@ export default function ReportPage() {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     useEffect(() => {
-      
+
         const loggedIn = localStorage.getItem("isLoggedIn")
         if (loggedIn === "true") {
             setIsLoggedIn(true)
@@ -27,7 +27,6 @@ export default function ReportPage() {
     const [formData, setFormData] = useState({
         age: "",
         sex: "",
-        contact: "",
         medicalHistory: "",
         localId: "",
         drugName: "",
@@ -60,7 +59,36 @@ export default function ReportPage() {
         }
 
         setError("")
+
+        // Get existing reports from localStorage
+        const existingReports = JSON.parse(localStorage.getItem("reports") || "[]")
+
+        // Add new report
+        const newReports = [...existingReports, { ...formData, submittedAt: new Date().toISOString() }]
+
+        // Save back to localStorage
+        localStorage.setItem("reports", JSON.stringify(newReports))
+
         console.log("Form Submitted:", formData)
+
+        // Reset form
+        setFormData({
+            age: "",
+            sex: "",
+            medicalHistory: "",
+            localId: "",
+            drugName: "",
+            dosage: "",
+            batchNumber: "",
+            startDate: "",
+            stopDate: "",
+            changeDose: "",
+            symptoms: "",
+            onset: "",
+            duration: "",
+            severity: "",
+            treatment: "",
+        })
     }
 
     return (
@@ -97,12 +125,7 @@ export default function ReportPage() {
                                         value={formData.sex}
                                         onChange={handleChange}
                                     />
-                                    <Input
-                                        placeholder="Contact"
-                                        name="contact"
-                                        value={formData.contact}
-                                        onChange={handleChange}
-                                    />
+                                    
                                     <Input
                                         placeholder="Relevant Medical History"
                                         name="medicalHistory"
