@@ -49,7 +49,7 @@ export default function LoginPage() {
       console.log("Login success ✅")
       // store login flag in localStorage (for demo)
       localStorage.setItem("isLoggedIn", "true")
-      router.push("/report",)
+      router.push("/upload-details",)
     } else {
       setError("Invalid OTP. Try again.")
     }
