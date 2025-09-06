@@ -1,7 +1,7 @@
 // app/page.tsx (Next.js 13+ App Router)
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Pill, FileText, ClipboardList, Eye, User } from "lucide-react"
+import { Pill, FileText, ClipboardList, Eye, User, Shield } from "lucide-react"
 import Link from "next/link"
 
 export default function Home() {
@@ -43,8 +43,18 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-6">
       <div className="max-w-5xl w-full text-center space-y-6">
-        <h1 className="text-4xl font-bold text-green-700">Pharmacy Assistant</h1>
+        <h1 className="text-4xl font-bold text-green-700">MediSafe</h1>
         <p className="text-gray-600">Smart tools for drug safety and reporting</p>
+
+          {/* Admin Login Button */}
+          <div className="flex justify-center mt-4">
+          <Link href="/admin-login">
+            <Button className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              Admin Login
+            </Button>
+          </Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
           {sections.map((section, idx) => (

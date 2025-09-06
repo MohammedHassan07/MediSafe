@@ -58,7 +58,7 @@ export default function ReportPage() {
             }
         }
 
-        setError("")
+        setError("Report Submitted")
 
         // Get existing reports from localStorage
         const existingReports = JSON.parse(localStorage.getItem("reports") || "[]")
@@ -69,7 +69,7 @@ export default function ReportPage() {
         // Save back to localStorage
         localStorage.setItem("reports", JSON.stringify(newReports))
 
-        console.log("Form Submitted:", formData)
+        // console.log("Form Submitted:", formData)
 
         // Reset form
         setFormData({
