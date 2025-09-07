@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 export default function LoginPage() {
   const router = useRouter()
 
-  const [step, setStep] = useState("login") 
+  const [step, setStep] = useState("login")
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,30 +29,9 @@ export default function LoginPage() {
       return
     }
 
+    // network  request
     setError("")
-    // 🔐 TODO: verify email/password with backend
-    // If valid, move to OTP step
-    setStep("otp")
-  }
-
-  const handleVerifyOtp = (e) => {
-    e.preventDefault()
-
-    if (!formData.otp) {
-      setError("Please enter OTP")
-      return
-    }
-
-    // Mock OTP validation
-    if (formData.otp === "123456") {
-      setError("")
-      console.log("Login success ✅")
-      // store login flag in localStorage (for demo)
-      localStorage.setItem("isLoggedIn", "true")
-      router.push("/upload-details",)
-    } else {
-      setError("Invalid OTP. Try again.")
-    }
+    router.push("/upload-details",)
   }
 
   return (
@@ -87,25 +66,6 @@ export default function LoginPage() {
                 className="w-full bg-green-600 hover:bg-green-700 text-white"
               >
                 Login
-              </Button>
-            </form>
-          )}
-
-          {step === "otp" && (
-            <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <Input
-                type="text"
-                placeholder="Enter OTP"
-                name="otp"
-                maxLength={6}
-                value={formData.otp}
-                onChange={handleChange}
-              />
-              <Button
-                type="submit"
-                className="w-full bg-green-600 hover:bg-green-700 text-white"
-              >
-                Verify OTP
               </Button>
             </form>
           )}

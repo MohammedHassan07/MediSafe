@@ -27,5 +27,6 @@ const InteractionSchema = new mongoose.Schema(
 // Ensure no duplicate pairs (drug1–drug2 vs drug2–drug1)
 InteractionSchema.index({ drug1: 1, drug2: 1 }, { unique: true });
 
-export default mongoose.models.Interaction ||
-  mongoose.model("Interaction", InteractionSchema);
+const interactionModel =  mongoose.models.Interaction || mongoose.model("Interaction", InteractionSchema);
+
+export default interactionModel

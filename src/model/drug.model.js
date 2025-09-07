@@ -8,4 +8,5 @@ const DrugSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.Drug || mongoose.model("Drug", DrugSchema);
+const drugModel = mongoose.models.Drug || mongoose.model("Drug", DrugSchema);
+export default drugModel
