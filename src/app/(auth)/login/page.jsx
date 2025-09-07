@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 export default function LoginPage() {
   const router = useRouter()
 
-  const [step, setStep] = useState("login") 
+  const [step, setStep] = useState("login")
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -21,7 +21,7 @@ export default function LoginPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault()
 
     if (!formData.email || !formData.password) {
@@ -29,13 +29,24 @@ export default function LoginPage() {
       return
     }
 
+    // network  request
+    const response = await postApiClient('/api/doctor/login', formData)
+
+    let timer
+    if (response.status === 'failed') {
+
+      setError(response.message)
+      timer = setTimeout(() => setError(''), 3000)
+
+      return
+    }
+    
     setError("")
-    // 🔐 TODO: verify email/password with backend
-    // If valid, move to OTP step
     setStep("otp")
+    clearTimeout(timer)
   }
 
-  const handleVerifyOtp = (e) => {
+  const handleVerifyOtp = async (e) => {
     e.preventDefault()
 
     if (!formData.otp) {
@@ -43,16 +54,20 @@ export default function LoginPage() {
       return
     }
 
-    // Mock OTP validation
-    if (formData.otp === "123456") {
-      setError("")
-      console.log("Login success ✅")
-      // store login flag in localStorage (for demo)
+      const response = await postApiClient('/api/doctor/verify-otp', formData)
+
+      let timer
+      if (response.status === 'failed') {
+  
+        setError(response.message)
+        timer = setTimeout(() => setError(''), 3000)
+        return
+      }
       localStorage.setItem("isLoggedIn", "true")
-      router.push("/report",)
-    } else {
-      setError("Invalid OTP. Try again.")
-    }
+      
+      router.push("/report")
+      setError("")
+      clearTimeout(timer)
   }
 
   return (

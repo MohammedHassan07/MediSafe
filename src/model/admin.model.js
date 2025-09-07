@@ -10,7 +10,7 @@ const adminSchema = new mongoose.Schema(
             type: Boolean,
             default: false
         },
-        OTP: Number
+        OTP: String
 
     },
     { timestamps: true }
