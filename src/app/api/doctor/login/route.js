@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/connectDB";
 import adminModel from "@/model/admin.model";
-import sendMail from "@/utils/sendMail";
 import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
 export async function POST(request) {
 
     await dbConnect()
@@ -14,6 +14,10 @@ export async function POST(request) {
     })
 
     const doctor = await adminModel.findOne({ email, isAdmin: false })
+    if (!doctor) return new Response(JSON.stringify({ doctor, status: 'failed', message: 'User with this email is not registered ' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' }
+    });
 
     const isValid = await bcrypt.compare(password, doctor.password)
 
@@ -22,16 +26,10 @@ export async function POST(request) {
         headers: { 'Content-Type': 'application/json' }
     });
 
-    // generate OTP
-    const otp = Math.floor(100000 + Math.random() * 900000)
-    otp.toString()
-    doctor.OTP = otp
+    const SECREY_KEY = process.env.SECREY_KEY
+    const token = jwt.sign({ email, role: doctor.isAdmin }, SECREY_KEY)
 
-    // send mail
-    sendMail(adminModel.email, otp)
-    await doctor.save()
-
-    return new Response(JSON.stringify({ status: 'success', message: 'OTP sent to your email' }), {
+    return new Response(JSON.stringify({ token, status: 'success', message: 'Log in successfull' }), {
         status: 200,
         headers: { 'Content-Type': 'application/json' }
     });

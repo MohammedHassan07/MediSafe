@@ -1,28 +1,41 @@
 import jwt from "jsonwebtoken";
+import dbConnect from "@/lib/connectDB";
+import adminModel from "@/model/admin.model";
 export async function POST(request) {
 
-    await dbConnect()
-    const body = await request.json();
-    const { email, otp } = body;
+    try {
 
-    if (!email || !otp) return new Response(JSON.stringify({ message: 'All fields are mandatory' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-    })
+        const body = await request.json();
+        const { email, otp } = body;
 
-    const doctor = await adminModel.findOne({ email, isAdmin: false })
+        await dbConnect()
 
-    if (doctor.OTP !== otp) return new Response(JSON.stringify({ status: 'failed', message: 'OTP did not match' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-    });
+        if (!email || !otp) return new Response(JSON.stringify({ message: 'All fields are mandatory' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        })
 
-    const SECREY_KEY = process.env.SECREY_KEY
-    const token = jwt.sign({ email, role: doctor.isAdmin }, SECREY_KEY)
+        const doctor = await adminModel.findOne({ email, isAdmin: false })
 
-    new Response(JSON.stringify({ token, status: 'success', message: 'Log in successfull' }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-    });
+        if (doctor.OTP !== otp) return new Response(JSON.stringify({ status: 'failed', message: 'OTP did not match' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        });
 
+        const SECREY_KEY = process.env.SECREY_KEY
+        const token = jwt.sign({ email, role: doctor.isAdmin }, SECREY_KEY)
+
+        return new Response(JSON.stringify({ token, status: 'success', message: 'Log in successfull' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+    } catch (error) {
+        console.log(error)
+
+        return new Response(JSON.stringify({ status: 'failed', message: error.message }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 }

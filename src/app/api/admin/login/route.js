@@ -15,6 +15,12 @@ export async function POST(request) {
 
     const admin = await adminModel.findOne({ email, isAdmin: true })
 
+    if (!admin) return new Response(JSON.stringify({ status: "failed", message: 'Admin with this email is not registered' }),
+        {
+            status: 400,
+            headers: { 'Content-Type': 'application/json' }
+        })
+
     const isValid = await bcrypt.compare(password, admin.password)
 
     if (!isValid) return new Response(JSON.stringify({ admin, status: 'failed', message: 'Invalid Credentials' }), {

@@ -2,10 +2,11 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import postApiClient from '@/utils/postApiClient'
+import postApiClient from "@/utils/postApiClient"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -28,22 +29,17 @@ export default function LoginPage() {
       return
     }
 
-    // network  request
-    const response = await postApiClient('/api/admin/login', formData)
-
-    let timer
-    if (response.status === 'failed') {
-
+    // example login request
+    const response = await postApiClient("/api/doctor/login", formData)
+  
+    if (response.status === "failed") {
       setError(response.message)
-      timer = setTimeout(() => setError(''), 3000)
-
+      setTimeout(() => setError(""), 3000)
       return
     }
 
-    localStorage.setItem('token', response.token)
-    router.push("/upload-details",)
-
-    clearTimeout(timer)
+    localStorage.setItem("token", response.token)
+    router.push("/submit-report")
   }
 
   return (
@@ -56,7 +52,6 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent>
           {error && <p className="text-red-600 mb-3">{error}</p>}
-
 
           <form onSubmit={handleLogin} className="space-y-4">
             <Input
@@ -81,6 +76,12 @@ export default function LoginPage() {
             </Button>
           </form>
 
+          <p className="text-center text-sm mt-4">
+            Don’t have an account?{" "}
+            <Link href="/register" className="text-green-600 hover:underline">
+              Register
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </main>

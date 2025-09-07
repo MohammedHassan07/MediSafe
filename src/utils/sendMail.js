@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer'
+import { otpTemplate } from '@/lib/OTP/OTPTemplate'
 
 export default async function sendMail(email, otp) {
 

@@ -16,8 +16,8 @@ export default function ReportPage() {
     const [isLoggedIn, setIsLoggedIn] = useState(false)
     useEffect(() => {
 
-        const loggedIn = localStorage.getItem("isLoggedIn")
-        if (loggedIn === "true") {
+        const loggedIn = localStorage.getItem("token")
+        if (loggedIn) {
             setIsLoggedIn(true)
         } else {
             router.push("/login")
