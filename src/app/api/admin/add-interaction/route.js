@@ -23,18 +23,29 @@ export async function POST(request) {
             });
         })
 
-        // Ensure drug1 < drug2 (to avoid swapped duplicates)
-        let d1 = drug1;
-        let d2 = drug2;
+
+        const drug1Doc = await drugModel.findOne({
+            $or: [{ _id: drug1 },],
+        });
+        const drug2Doc = await drugModel.findOne({
+            $or: [{ _id: drug2 },],
+        });
+
+        if (!drug1Doc || !drug2Doc) {
+            return new Response(
+                JSON.stringify({
+                    status: "failed",
+                    message: "One or both drugs not found",
+                }),
+                { status: 404, headers: { "Content-Type": "application/json" } }
+            );
+        }
+
+        let d1 = drug1Doc._id;
+        let d2 = drug2Doc._id;
         if (d1.toString() > d2.toString()) {
             [d1, d2] = [d2, d1];
         }
-
-        // Check if interaction already exists
-        const exists = await interactionModel.findOne({
-            drug1: d1,
-            drug2: d2,
-        });
 
         if (exists) {
             return new Response(

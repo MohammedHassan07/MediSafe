@@ -8,9 +8,16 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { getApiClient } from "@/utils/getApiClient"
 
 // Local storage mock persistence
-const loadData = (key) => JSON.parse(localStorage.getItem(key) || "[]")
+const loadData = async (key) => {
+
+  const response = await getApiClient(`/api/${key}`)
+  if (response.status === "failed") return []
+
+  return response.data
+}
 const saveData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 export default function AdminPage() {
@@ -40,12 +47,20 @@ export default function AdminPage() {
   })
 
   useEffect(() => {
-    setMedicines(loadData("medicines"))
-    setInteractions(loadData("interactions"))
+
+    const fetchData = async () => {
+
+      setMedicines(await loadData("medicines"))
+      setInteractions(await loadData("interactions"))
+    }
+
+    fetchData()
+    console.log(interactions)
   }, [])
 
+
   // Handle medicine add
-  const handleAddMedicine = (e) => {
+  function handleAddMedicine(e) {
     e.preventDefault()
     if (!medicineForm.drugName || !medicineForm.description) return
 
@@ -67,7 +82,7 @@ export default function AdminPage() {
   }
 
   // Handle interaction add
-  const handleAddInteraction = (e) => {
+  function handleAddInteraction(e) {
     e.preventDefault()
     if (!interactionForm.drug1 || !interactionForm.drug2 || !interactionForm.description) return
 
@@ -149,7 +164,7 @@ export default function AdminPage() {
                   </TableHeader>
                   <TableBody>
                     {medicines.map((m) => (
-                      <TableRow key={m.id}>
+                      <TableRow key={m._id}>
                         <TableCell>{m.drugName}</TableCell>
                         <TableCell>{m.molecularFormula}</TableCell>
                         <TableCell>{m.IUPAC_Name}</TableCell>
@@ -181,7 +196,7 @@ export default function AdminPage() {
                       </SelectTrigger>
                       <SelectContent>
                         {medicines.map((m) => (
-                          <SelectItem key={m.id} value={m.drugName}>{m.drugName}</SelectItem>
+                          <SelectItem key={m._did} value={m.drugName}>{m.drugName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -243,7 +258,7 @@ export default function AdminPage() {
                   </TableHeader>
                   <TableBody>
                     {interactions.map((i) => (
-                      <TableRow key={i.id}>
+                      <TableRow key={i._id}>
                         <TableCell>{i.drug1}</TableCell>
                         <TableCell>{i.drug2}</TableCell>
                         <TableCell className="capitalize">{i.severity}</TableCell>

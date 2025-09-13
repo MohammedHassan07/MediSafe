@@ -10,7 +10,7 @@ export async function getApiClient(url) {
         });
 
         const response = await res.json()
-        console.log(response)
+        return response
 
     } catch (error) {
         console.log(error)

@@ -20,6 +20,11 @@ export async function middleware(req) {
 
         if (payload.isAdmin)
             return NextResponse.next()
+        else
+            return NextResponse.json(
+                { message: "Access denied: Admins only" },
+                { status: 403 }
+            )
     } catch (err) {
         return NextResponse.json(
             { message: err.message },
