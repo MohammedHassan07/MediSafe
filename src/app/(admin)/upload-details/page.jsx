@@ -9,21 +9,36 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { getApiClient } from "@/utils/getApiClient"
+import postApiClient from "@/utils/postApiClient"
 
-// Local storage mock persistence
-const loadData = async (key) => {
-
-  const response = await getApiClient(`/api/${key}`)
-  if (response.status === "failed") return []
-
-  console.log(response.data)
-  return response.data
+// Helper
+const loadData = async (key, page = 1, limit = 5) => {
+  let response = null
+  switch (key) {
+    case "medicines": {
+      const url = `/api/get-medicines`
+      response = await postApiClient(url, { page, limit })
+      break
+    }
+    case "interactions": {
+      response = await getApiClient(`/api/medicine-name`)
+      break
+    }
+  }
+  if (!response || response.status === "failed") return { data: [], pagination: {} }
+  return response
 }
+
 const saveData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
 
 export default function AdminPage() {
   const [medicines, setMedicines] = useState([])
   const [interactions, setInteractions] = useState([])
+
+  // Pagination state
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(5)
+  const [totalPages, setTotalPages] = useState(1)
 
   // Medicine Form State
   const [medicineForm, setMedicineForm] = useState({
@@ -47,17 +62,20 @@ export default function AdminPage() {
     imageURL: "",
   })
 
-  useEffect(() => {
-
-    const fetchData = async () => {
-
-      setMedicines(await loadData("medicines"))
-      setInteractions(await loadData("interactions"))
+  // Fetch data
+  const fetchData = async () => {
+    const medResponse = await loadData("medicines", page, limit)
+    if (medResponse.status === "success") {
+      setMedicines(medResponse.data)
+      setTotalPages(medResponse.pagination.totalPages)
     }
+    const interResponse = await loadData("interactions")
+    setInteractions(interResponse.data || [])
+  }
 
+  useEffect(() => {
     fetchData()
-  }, [])
-
+  }, [page, limit])
 
   // Handle medicine add
   function handleAddMedicine(e) {
@@ -149,6 +167,7 @@ export default function AdminPage() {
                   </Button>
                 </form>
 
+                {/* Medicine Table */}
                 <Table>
                   <TableHeader>
                     <TableRow>
@@ -164,7 +183,7 @@ export default function AdminPage() {
                   </TableHeader>
                   <TableBody>
                     {medicines.map((m) => (
-                      <TableRow key={m._id}>
+                      <TableRow key={m._id || m.id}>
                         <TableCell>{m.drugName}</TableCell>
                         <TableCell>{m.molecularFormula}</TableCell>
                         <TableCell>{m.IUPAC_Name}</TableCell>
@@ -181,6 +200,39 @@ export default function AdminPage() {
                     ))}
                   </TableBody>
                 </Table>
+
+                {/* Pagination Controls */}
+                <div className="flex items-center justify-between mt-4">
+                  <Button
+                    disabled={page <= 1}
+                    onClick={() => setPage((prev) => prev - 1)}
+                    className="bg-gray-300 text-black hover:bg-gray-400"
+                  >
+                    Previous
+                  </Button>
+
+                  <span className="mx-4">Page {page} of {totalPages}</span>
+
+                  <Button
+                    disabled={page >= totalPages}
+                    onClick={() => setPage((prev) => prev + 1)}
+                    className="bg-gray-300 text-black hover:bg-gray-400"
+                  >
+                    Next
+                  </Button>
+
+                  {/* Limit Selector */}
+                  <Select value={String(limit)} onValueChange={(val) => setLimit(Number(val))}>
+                    <SelectTrigger className="w-28 ml-4">
+                      <SelectValue placeholder="Rows" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5">5 / page</SelectItem>
+                      <SelectItem value="10">10 / page</SelectItem>
+                      <SelectItem value="20">20 / page</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </TabsContent>
 
               {/* Interactions */}
@@ -196,7 +248,7 @@ export default function AdminPage() {
                       </SelectTrigger>
                       <SelectContent>
                         {medicines.map((m) => (
-                          <SelectItem key={m._did} value={m.drugName}>{m.drugName}</SelectItem>
+                          <SelectItem key={m._id} value={m.drugName}>{m.drugName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -210,7 +262,7 @@ export default function AdminPage() {
                       </SelectTrigger>
                       <SelectContent>
                         {medicines.map((m) => (
-                          <SelectItem key={m.id} value={m.drugName}>{m.drugName}</SelectItem>
+                          <SelectItem key={m._id} value={m.drugName}>{m.drugName}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -258,9 +310,9 @@ export default function AdminPage() {
                   </TableHeader>
                   <TableBody>
                     {interactions.map((i) => (
-                      <TableRow key={i._id}>
-                        <TableCell>{i.drug1.drugName}</TableCell>
-                        <TableCell>{i.drug2.drugName}</TableCell>
+                      <TableRow key={i._id || i.id}>
+                        <TableCell>{i.drug1}</TableCell>
+                        <TableCell>{i.drug2}</TableCell>
                         <TableCell className="capitalize">{i.severity}</TableCell>
                         <TableCell>{i.description}</TableCell>
                         <TableCell>{i.management}</TableCell>
