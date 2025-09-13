@@ -4,7 +4,7 @@ import drugModel from "@/model/drug.model";
 export async function GET() {
 
     await dbConnect()
-    const medicines = await drugModel.find()
+    const medicines = await drugModel.find().select("_id drugName")
 
     if (!medicines || medicines.length < 1) return new Response(JSON.stringify({ status: 'failed', message: 'Medicines not found' }), {
         status: 400,
