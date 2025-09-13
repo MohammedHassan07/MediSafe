@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import { SignJWT } from "jose";
 import dbConnect from "@/lib/connectDB";
 import adminModel from "@/model/admin.model";
 export async function POST(request) {
@@ -21,9 +21,13 @@ export async function POST(request) {
             status: 400,
             headers: { 'Content-Type': 'application/json' }
         });
+        const SECRET_KEY = new TextEncoder().encode(process.env.SECRET_KEY);
 
-        const SECREY_KEY = process.env.SECREY_KEY
-        const token = jwt.sign({ email, role: doctor.isAdmin }, SECREY_KEY)
+        const token = await new SignJWT({ email, isAdmin: doctor.isAdmin })
+            .setProtectedHeader({ alg: "HS256" })
+            .setIssuedAt()
+            // .setExpirationTime("1h")                      // exp (1 hour)
+            .sign(SECRET_KEY)
 
         return new Response(JSON.stringify({ token, status: 'success', message: 'Log in successfull' }), {
             status: 200,
