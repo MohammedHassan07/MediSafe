@@ -1,7 +1,7 @@
 // app/page.tsx (Next.js 13+ App Router)
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Pill, FileText, ClipboardList, Eye, User, Shield } from "lucide-react"
+import { Pill, FileText, ClipboardList, Eye, User, Shield, BookOpen } from "lucide-react"
 import Link from "next/link"
 
 export default function Home() {
@@ -18,7 +18,12 @@ export default function Home() {
       icon: <ClipboardList className="w-8 h-8 text-green-600" />,
       href: "/possible",
     },
-
+    {
+      title: "Medicine Library",
+      description: "Explore details of drugs including structure, chemical formula, IUPAC name, and medical uses.",
+      icon: <BookOpen className="w-8 h-8 text-green-600" />,
+      href: "/medicine-library",
+    },
     {
       title: "Report ADR",
       description: "Submit your own obervations view reports (login required).",
@@ -46,8 +51,8 @@ export default function Home() {
         <h1 className="text-4xl font-bold text-green-700">MediSafe</h1>
         <p className="text-gray-600">Smart tools for drug safety and reporting</p>
 
-          {/* Admin Login Button */}
-          <div className="flex justify-center mt-4">
+        {/* Admin Login Button */}
+        <div className="flex justify-center mt-4">
           <Link href="/admin-login">
             <Button className="bg-red-600 hover:bg-red-700 text-white flex items-center gap-2">
               <Shield className="w-4 h-4" />

@@ -1,4 +1,5 @@
 import interactionModel from "@/model/interaction.model";
+import drugModel from "@/model/drug.model";
 
 export async function POST(request) {
 
@@ -24,12 +25,10 @@ export async function POST(request) {
         })
 
 
-        const drug1Doc = await drugModel.findOne({
-            $or: [{ _id: drug1 },],
-        });
-        const drug2Doc = await drugModel.findOne({
-            $or: [{ _id: drug2 },],
-        });
+        const [drug1Doc, drug2Doc] = await Promise.all([
+            drugModel.findOne({ _id: drug1 }),
+            drugModel.findOne({ _id: drug2 })
+        ])
 
         if (!drug1Doc || !drug2Doc) {
             return new Response(
@@ -47,6 +46,8 @@ export async function POST(request) {
             [d1, d2] = [d2, d1];
         }
 
+        const exists = await interactionModel.findOne({ drug1: d1, drug2: d2 })
+        console.log(exists)
         if (exists) {
             return new Response(
                 JSON.stringify({

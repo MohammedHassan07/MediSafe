@@ -16,6 +16,7 @@ const loadData = async (key) => {
   const response = await getApiClient(`/api/${key}`)
   if (response.status === "failed") return []
 
+  console.log(response.data)
   return response.data
 }
 const saveData = (key, data) => localStorage.setItem(key, JSON.stringify(data))
@@ -55,7 +56,6 @@ export default function AdminPage() {
     }
 
     fetchData()
-    console.log(interactions)
   }, [])
 
 
@@ -259,8 +259,8 @@ export default function AdminPage() {
                   <TableBody>
                     {interactions.map((i) => (
                       <TableRow key={i._id}>
-                        <TableCell>{i.drug1}</TableCell>
-                        <TableCell>{i.drug2}</TableCell>
+                        <TableCell>{i.drug1.drugName}</TableCell>
+                        <TableCell>{i.drug2.drugName}</TableCell>
                         <TableCell className="capitalize">{i.severity}</TableCell>
                         <TableCell>{i.description}</TableCell>
                         <TableCell>{i.management}</TableCell>

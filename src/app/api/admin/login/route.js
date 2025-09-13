@@ -32,9 +32,10 @@ export async function POST(request) {
 
 
     const SECRET_KEY = new TextEncoder().encode(process.env.SECRET_KEY);
+
     const token = await new SignJWT({ email, isAdmin: admin.isAdmin })
         .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()
+        // .setIssuedAt()
         // .setExpirationTime("1h")                      // exp (1 hour)
         .sign(SECRET_KEY);
 
