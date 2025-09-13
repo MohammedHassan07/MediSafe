@@ -16,6 +16,8 @@ if (!cached) {
 }
 
 async function dbConnect() {
+
+  console.log('db connected')
   if (cached.conn) {
     return cached.conn;
   }

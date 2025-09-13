@@ -2,8 +2,15 @@ import mongoose from "mongoose";
 
 const DrugSchema = new mongoose.Schema(
   {
-    name: { type: String, required: true, unique: true },
-    description: { type: String }
+
+    drugName: { type: String, required: true, unique: true },
+    molecularFormula: String,
+    IUPAC_Name: String,
+    description: String,
+    mechanism: String,
+    uses: String,
+    adverseEffect: String,
+    drugImage: String,
   },
   { timestamps: true }
 );
