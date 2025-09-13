@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/connectDB";
 import adminModel from "@/model/admin.model";
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+import { SignJWT } from "jose";
 export async function POST(request) {
 
     await dbConnect()
@@ -26,8 +26,12 @@ export async function POST(request) {
         headers: { 'Content-Type': 'application/json' }
     });
 
-    const SECREY_KEY = process.env.SECREY_KEY
-    const token = jwt.sign({ email, role: doctor.isAdmin }, SECREY_KEY)
+    const SECRET_KEY = new TextEncoder().encode(process.env.SECRET_KEY);
+    const token = await new SignJWT({ email, isAdmin: doctor.isAdmin })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        // .setExpirationTime("1h")                      // exp (1 hour)
+        .sign(SECRET_KEY)
 
     return new Response(JSON.stringify({ token, status: 'success', message: 'Log in successfull' }), {
         status: 200,

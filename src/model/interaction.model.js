@@ -17,16 +17,26 @@ const InteractionSchema = new mongoose.Schema(
       enum: ["mild", "moderate", "severe"],
       required: true,
     },
-    description: { type: String, required: true }, 
-    management: { type: String }, 
-    imageURL: { type: String }, 
+    description: { type: String, required: true },
+    management: { type: String },
+    imageURL: { type: String },
   },
   { timestamps: true }
 );
 
-// Ensure no duplicate pairs (drug1–drug2 vs drug2–drug1)
-InteractionSchema.index({ drug1: 1, drug2: 1 }, { unique: true });
+// Always enforce drug1 < drug2
+InteractionSchema.pre("save", function (next) {
+  if (this.drug1.toString() > this.drug2.toString()) {
+    const temp = this.drug1
+    this.drug1 = this.drug2
+    this.drug2 = temp
+  }
+  next()
+})
 
-const interactionModel =  mongoose.models.Interaction || mongoose.model("Interaction", InteractionSchema);
+// unique index
+InteractionSchema.index({ drug1: 1, drug2: 1 }, { unique: true })
+
+const interactionModel = mongoose.models.Interaction || mongoose.model("Interaction", InteractionSchema);
 
 export default interactionModel
