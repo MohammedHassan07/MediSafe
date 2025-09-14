@@ -1,11 +1,13 @@
 export default async function postApiClient(url, data) {
 
-    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
     try {
+        const token = localStorage.getItem('token')
+
         const response = await fetch(url, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
             },
             body: JSON.stringify(data)
         });

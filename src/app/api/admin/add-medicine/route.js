@@ -18,24 +18,43 @@ export async function POST(request) {
             drugImage,
         } = body;
 
-        Object.keys(body).forEach(key => {
+        const keys = Object.keys(body)
 
+        for (const key of keys) {
             const value = body[key]
-            if (value === undefined || value.trim() === '' || !value) return new Response(JSON.stringify({ status: 'failed', message: `${key} is Required` }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        })
+            if (
+                value === undefined ||
+                value === null ||
+                (typeof value === "string" && value.trim() === "")
+            ) {
+                return new Response(JSON.stringify({
+                    status: "failed",
+                    message: `${key} is required`
+                }), {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" }
+                })
+            }
+        }
 
 
         await dbConnect()
         const medicine = await drugModel.findOne({ drugName })
 
-        if (medicine) return new Response(JSON.stringify({ status: "failed", message: `${medicine} Already present.` }),
-            {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            })
+        if (medicine) {
+            console.log('in if')
+            return new Response(
+                JSON.stringify({
+                    status: "failed",
+                    message: `${drugName} already present.`
+                }),
+                {
+                    status: 400,
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            )
+        }
+        
 
         // TODO: Handle Images
         const drugData = {

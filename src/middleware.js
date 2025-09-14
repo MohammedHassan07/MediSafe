@@ -3,7 +3,7 @@ import { jwtVerify } from "jose"
 export async function middleware(req) {
 
     const token = req.headers.get("authorization")?.split(" ")[1]
-console.log('token', token)
+
     if (!token) {
         return NextResponse.json(
             { message: "No token provided" },
@@ -18,7 +18,6 @@ console.log('token', token)
         const { payload } = await jwtVerify(token, SECRET_KEY, {
             algorithms: ["HS256"],
         })
-        console.log(payload)
 
         if (payload.isAdmin)
             return NextResponse.next()

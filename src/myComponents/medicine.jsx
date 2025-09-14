@@ -5,6 +5,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import postApiClient from "@/utils/postApiClient"
+import { toast } from "sonner"
+
 const Medicine = () => {
     const [medicines, setMedicines] = useState([])
     const [searchMed, setSearchMed] = useState("")
@@ -39,15 +41,43 @@ const Medicine = () => {
 
 
     // Handle medicine add
-    function handleAddMedicine(e) {
+    async function handleAddMedicine(e) {
         e.preventDefault()
-        if (!medicineForm.drugName || !medicineForm.description) return
+
+        if (!medicineForm.drugName || !medicineForm.description) {
+            return toast("Validation Error", {
+                description: "Drug name and description are required",
+                style: {
+                    background: "red",
+                    color: "white",
+                },
+
+            })
+        }
 
         const newMed = { ...medicineForm, id: Date.now() }
+
+        const response = await postApiClient('/api/admin/add-medicine', newMed)
+        if (response.status !== "success") {
+
+            return toast.error("Error", {
+                description: response.message || "Failed to add medicine",
+                style: {
+                    background: "red",
+                    color: "white",
+                },
+
+            })
+        }
+        toast.success("Added", {
+            description: response.message || "Failed to add medicine",
+            style: {
+                background: "green",
+                color: "white",
+            },
+        })
         const updated = [...medicines, newMed]
         setMedicines(updated)
-        saveData("medicines", updated)
-
         setMedicineForm({
             drugName: "",
             molecularFormula: "",
