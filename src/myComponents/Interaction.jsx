@@ -23,7 +23,7 @@ const Interaction = () => {
     // Fetch interactions
     const fetchInteractions = async () => {
         const interResponse = await postApiClient("/api/interactions", { search: searchInter })
-       
+
         if (interResponse.status === "success") {
             setInteractions(interResponse.data)
         }
@@ -140,21 +140,36 @@ const Interaction = () => {
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {interactions.map((i) => (
-                        <TableRow key={i._id || i.id}>
-                            <TableCell>{i.drug1.drugName}</TableCell>
-                            <TableCell>{i.drug2.drugName}</TableCell>
-                            <TableCell className="capitalize">{i.severity}</TableCell>
-                            <TableCell>{i.description}</TableCell>
-                            <TableCell>{i.management}</TableCell>
-                            <TableCell>
-                                {i.imageURL ? (
-                                    <img src={i.imageURL} alt="interaction" className="w-16 h-16 object-cover rounded" />
-                                ) : "—"}
+                    {interactions.length > 0 ? (
+                        interactions.map((i) => (
+                            <TableRow key={i._id || i.id}>
+                                <TableCell>{i.drug1?.drugName || "—"}</TableCell>
+                                <TableCell>{i.drug2?.drugName || "—"}</TableCell>
+                                <TableCell className="capitalize">{i.severity || "—"}</TableCell>
+                                <TableCell>{i.description || "—"}</TableCell>
+                                <TableCell>{i.management || "—"}</TableCell>
+                                <TableCell>
+                                    {i.imageURL ? (
+                                        <img
+                                            src={i.imageURL}
+                                            alt="interaction"
+                                            className="w-16 h-16 object-cover rounded"
+                                        />
+                                    ) : (
+                                        "—"
+                                    )}
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    ) : (
+                        <TableRow>
+                            <TableCell colSpan={6} className="text-center text-gray-500">
+                                No Data
                             </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
+
             </Table>
         </>
     )
