@@ -5,27 +5,32 @@ export async function POST(req) {
     await dbConnect();
 
     try {
-        const { page = 1, limit = 10 } = await req.json();
+        const { search } = await req.json();
 
-        const skip = (page - 1) * limit;
+        let filter = {}
+        if (search && search.trim() !== "") {
+            filter = {
+                $or: [
+                    { drugName: { $regex: search, $options: "i" } },
+                    { IUPAC_Name: { $regex: search, $options: "i" } },
+                    { molecularFormula: { $regex: search, $options: "i" } },
+                ],
+            };
+        }
+        const medicines = await drugModel.find(filter)
 
-        const medicines = await drugModel.find({})
-            .skip(skip)
-            .limit(limit);
-
-        const total = await drugModel.countDocuments();
-
+        if (!medicines || medicines.length < 1) return new Response(JSON.stringify({
+            status: "failed",
+            message: "Medicine not found",
+        }), {
+            status: 400,
+            headers: { "Content-Type": "application/json" },
+        })
         return new Response(
             JSON.stringify({
                 status: "success",
                 message: "Medicines Fetched",
                 data: medicines,
-                pagination: {
-                    total,
-                    page,
-                    limit,
-                    totalPages: Math.ceil(total / limit),
-                },
             }),
             {
                 status: 200,

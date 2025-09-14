@@ -2,46 +2,47 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
 import { getApiClient } from "@/utils/getApiClient"
-
-const loadData = async (key, id) => {
-
-  let url = ''
-  switch (key) {
-
-    case 'medicine': { 
-      url = `/api/medicine/${id}` 
-      break 
-    }
-
-    case 'name': url = '/api/medicine-name'
-  }
-  console.log(url)
-  const response = await getApiClient(url)
-  return response
-}
+import postApiClient from "@/utils/postApiClient"
 
 export default function MedicineLibraryPage() {
-  const [medicines, setMedicines] = useState([])
+  const [search, setSearch] = useState("")
+  const [results, setResults] = useState([])
   const [selectedMed, setSelectedMed] = useState(null)
   const [error, setError] = useState(null)
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await loadData('name')
-      if (response.status !== 'success') return setError(response.message)
-      setMedicines(response.data)
+  // Fetch medicines by search
+  const fetchMedicines = async () => {
+    const response = await postApiClient("/api/get-medicines", { search })
+    if (response.status !== "success") {
+      setResults([])
+      return setError(response.message)
     }
-    fetchData()
-  }, [])
+    setResults(response.data)
+    setError(null)
+  }
+
+  // Debounced search
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      if (search.trim() !== "") {
+        fetchMedicines()
+      } else {
+        setResults([])
+      }
+    }, 500)
+
+    return () => clearTimeout(delayDebounce)
+  }, [search])
 
   const handleSelect = async (id) => {
+    const response = await getApiClient(`/api/medicine/${id}`)
+    if (response.status !== "success") return setError(response.message)
 
-    const response = await loadData('medicine', id)
-    console.log(response)
     setSelectedMed(response.data)
-  }
+    setResults([]) 
+}
 
   return (
     <main className="min-h-screen bg-gray-50 p-6 flex justify-center">
@@ -59,19 +60,30 @@ export default function MedicineLibraryPage() {
               </div>
             )}
 
-            <Select onValueChange={handleSelect}>
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a medicine" />
-              </SelectTrigger>
-              <SelectContent>
-                {medicines.map((m) => (
-                  <SelectItem key={m._id} value={m._id.toString()}>
-                    {m.drugName}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            {/* Search Input */}
+            <Input
+              placeholder="Search medicine by name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="mb-4"
+            />
 
+            {/* Results */}
+            {results.length > 0 && (
+              <ul className="border rounded-lg divide-y bg-white shadow">
+                {results.map((m) => (
+                  <li
+                    key={m._id}
+                    className="p-3 hover:bg-green-50 cursor-pointer"
+                    onClick={() => handleSelect(m._id)}
+                  >
+                    {m.drugName}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {/* Selected Medicine Details */}
             {selectedMed && (
               <div className="mt-6 space-y-4">
                 <div className="flex flex-col md:flex-row gap-6">
