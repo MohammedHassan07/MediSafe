@@ -11,8 +11,7 @@ export default function MedicineLibraryPage() {
   const [search, setSearch] = useState("")
   const [results, setResults] = useState([])
   const [selectedMed, setSelectedMed] = useState(null)
-  const [error, setError] = useState(null)
-
+  
   // Fetch medicines by search
   const fetchMedicines = async () => {
     const response = await postApiClient("/api/get-medicines", { search })
@@ -24,7 +23,6 @@ export default function MedicineLibraryPage() {
           background: "red",
           color: "white",
         },
-
       })
     }
     setResults(response.data)

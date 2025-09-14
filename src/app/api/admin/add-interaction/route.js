@@ -13,6 +13,7 @@ export async function POST(request) {
             description,
             management,
             imageURL,
+            adr,
         } = body;
 
         const keys = Object.keys(body)
@@ -78,6 +79,7 @@ export async function POST(request) {
             drug2: d2,
             severity,
             description,
+            adr,
             management,
             imageURL,
         });

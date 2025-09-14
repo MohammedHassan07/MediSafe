@@ -32,6 +32,11 @@ const Medicine = () => {
 
     // Medicines debounce
     useEffect(() => {
+
+        if (!searchMed.trim()) {
+            setMedicines([])
+            return
+        }
         const delayDebounce = setTimeout(() => {
             fetchMedicines()
         }, 500)

@@ -22,6 +22,7 @@ const Interaction = () => {
         severity: "mild",
         description: "",
         management: "",
+        adr: "",
         imageURL: "",
         drug1Name: "", // temporary input value for display
         drug2Name: "",
@@ -30,9 +31,8 @@ const Interaction = () => {
     // Fetch interactions
     const fetchInteractions = async () => {
         const interResponse = await postApiClient("/api/interactions", { search: searchInter })
-        console.log(interResponse)
+
         if (interResponse.status !== "success") {
-            console.log(interResponse.status)
             return toast.error("Error", {
                 description: interResponse.message || "Interaction not found",
                 style: {
@@ -46,11 +46,16 @@ const Interaction = () => {
     }
 
     useEffect(() => {
+
+        if (!searchInter.trim()) {
+            return
+        }
         const delayDebounce = setTimeout(() => {
             fetchInteractions()
         }, 500)
         return () => clearTimeout(delayDebounce)
     }, [searchInter])
+
     // Fetch drug suggestions for autocomplete
     const fetchDrugSuggestions = async (query, drugNumber) => {
         if (!query) return
@@ -80,6 +85,7 @@ const Interaction = () => {
             severity: interactionForm.severity,
             description: interactionForm.description,
             management: interactionForm.management,
+            adr: interactionForm.adr,
             imageURL: interactionForm.imageURL,
             id: Date.now(),
         }
@@ -109,6 +115,7 @@ const Interaction = () => {
             severity: "mild",
             description: "",
             management: "",
+            adr: "",
             imageURL: "",
             drug1Name: "",
             drug2Name: "",
@@ -205,6 +212,11 @@ const Interaction = () => {
                     onChange={(e) => setInteractionForm({ ...interactionForm, description: e.target.value })}
                 />
                 <Textarea
+                    placeholder="Adverse Drug Reaction"
+                    value={interactionForm.adr}
+                    onChange={(e) => setInteractionForm({ ...interactionForm, adr: e.target.value })}
+                />
+                <Textarea
                     placeholder="Management"
                     value={interactionForm.management}
                     onChange={(e) => setInteractionForm({ ...interactionForm, management: e.target.value })}
@@ -238,6 +250,7 @@ const Interaction = () => {
                         <TableHead>Drug 2</TableHead>
                         <TableHead>Severity</TableHead>
                         <TableHead>Description</TableHead>
+                        <TableHead>ADR</TableHead>
                         <TableHead>Management</TableHead>
                         <TableHead>Image</TableHead>
                     </TableRow>
@@ -250,6 +263,7 @@ const Interaction = () => {
                                 <TableCell>{i.drug2.drugName || "—"}</TableCell>
                                 <TableCell className="capitalize">{i.severity || "—"}</TableCell>
                                 <TableCell>{i.description || "—"}</TableCell>
+                                <TableCell>{i.adr || "—"}</TableCell>
                                 <TableCell>{i.management || "—"}</TableCell>
                                 <TableCell>
                                     {i.imageURL ? (

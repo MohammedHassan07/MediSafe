@@ -21,7 +21,7 @@ export default function AboutPage() {
                 alt="Mujahid Ahmed Haroon Rasheed"
                 width={150}
                 height={150}
-                className="rounded-full shadow-md object-cover h-35"
+                className="rounded-full shadow-md object-fill h-35"
               />
               <div>
                 <h2 className="text-2xl font-semibold text-green-700">

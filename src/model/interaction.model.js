@@ -19,6 +19,7 @@ const InteractionSchema = new mongoose.Schema(
     },
     description: { type: String, required: true },
     management: { type: String },
+    adr: Stirng,
     imageURL: { type: String },
   },
   { timestamps: true }
