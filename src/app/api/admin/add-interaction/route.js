@@ -15,14 +15,24 @@ export async function POST(request) {
             imageURL,
         } = body;
 
-        Object.keys(body).forEach(key => {
+        const keys = Object.keys(body)
 
+        for (const key of keys) {
             const value = body[key]
-            if (value === undefined || value.trim() === '' || !value) return new Response(JSON.stringify({ status: 'failed', message: `${key} is Required` }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        })
+            if (
+                value === undefined ||
+                value === null ||
+                (typeof value === "string" && value.trim() === "")
+            ) {
+                return new Response(JSON.stringify({
+                    status: "failed",
+                    message: `${key} is required`
+                }), {
+                    status: 400,
+                    headers: { "Content-Type": "application/json" }
+                })
+            }
+        }
 
 
         const [drug1Doc, drug2Doc] = await Promise.all([
@@ -47,7 +57,7 @@ export async function POST(request) {
         }
 
         const exists = await interactionModel.findOne({ drug1: d1, drug2: d2 })
-        console.log(exists)
+   
         if (exists) {
             return new Response(
                 JSON.stringify({

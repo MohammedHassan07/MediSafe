@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { getApiClient } from "@/utils/getApiClient"
 import postApiClient from "@/utils/postApiClient"
+import { toast } from "sonner"
 
 export default function MedicineLibraryPage() {
   const [search, setSearch] = useState("")
@@ -17,7 +18,14 @@ export default function MedicineLibraryPage() {
     const response = await postApiClient("/api/get-medicines", { search })
     if (response.status !== "success") {
       setResults([])
-      return setError(response.message)
+      return toast.error("Error", {
+        description: response.message || "Failed to add medicine",
+        style: {
+          background: "red",
+          color: "white",
+        },
+
+      })
     }
     setResults(response.data)
     setError(null)
@@ -41,8 +49,8 @@ export default function MedicineLibraryPage() {
     if (response.status !== "success") return setError(response.message)
 
     setSelectedMed(response.data)
-    setResults([]) 
-}
+    setResults([])
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 p-6 flex justify-center">
@@ -52,13 +60,6 @@ export default function MedicineLibraryPage() {
             <CardTitle className="text-2xl text-center">Medicine Library</CardTitle>
           </CardHeader>
           <CardContent className="p-6">
-
-            {/* Error message */}
-            {error && (
-              <div className="mb-4 p-3 rounded-lg bg-red-100 text-red-700 border border-red-300">
-                {error}
-              </div>
-            )}
 
             {/* Search Input */}
             <Input
