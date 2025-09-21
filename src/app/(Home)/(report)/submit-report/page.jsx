@@ -7,6 +7,16 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useEffect } from "react"
+import postApiClient from "@/utils/postApiClient"
+import { toast } from "sonner"
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+} from "@/components/ui/select"
+
 
 
 export default function ReportPage() {
@@ -14,6 +24,7 @@ export default function ReportPage() {
     const router = useRouter()
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
+    const [btnText, setbtnText] = useState('Submit Report')
     useEffect(() => {
 
         const loggedIn = localStorage.getItem("token")
@@ -42,23 +53,27 @@ export default function ReportPage() {
         treatment: "",
     })
 
-    const [error, setError] = useState("")
-
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
 
         for (let key in formData) {
             if (!formData[key]) {
-                setError("Please fill in all fields before submitting.")
-                return
+                return toast.error("Error", {
+                    description: "Please fill in all fields before submitting.",
+                    style: {
+                        background: "red",
+                        color: "white",
+                    },
+
+                })
             }
         }
 
-        setError("Report Submitted")
+        setbtnText('Submitting...')
 
         // Get existing reports from localStorage
         const existingReports = JSON.parse(localStorage.getItem("reports") || "[]")
@@ -69,7 +84,28 @@ export default function ReportPage() {
         // Save back to localStorage
         localStorage.setItem("reports", JSON.stringify(newReports))
 
-        // console.log("Form Submitted:", formData)
+        const response = await postApiClient('/api/doctor/submit-report', formData)
+        if (response.status !== "success") {
+            return toast.error("Error", {
+                description: response.message || "Internal Server Error",
+                style: {
+                    background: "red",
+                    color: "white",
+                },
+
+            })
+        }
+
+        toast.error("Success", {
+            description: response.message || "Report Added",
+            style: {
+                background: "green",
+                color: "white",
+            },
+
+        })
+
+        setbtnText('Submit Report')
 
         // Reset form
         setFormData({
@@ -102,10 +138,7 @@ export default function ReportPage() {
                     </CardHeader>
 
                     <CardContent>
-                        {error && (
-                            <p className="text-red-600 font-semibold mb-4">{error}</p>
-                        )}
-
+                        
                         <form onSubmit={handleSubmit} className="space-y-8">
                             {/* Patient Details */}
                             <section className="space-y-4">
@@ -125,7 +158,7 @@ export default function ReportPage() {
                                         value={formData.sex}
                                         onChange={handleChange}
                                     />
-                                    
+
                                     <Input
                                         placeholder="Relevant Medical History"
                                         name="medicalHistory"
@@ -133,7 +166,7 @@ export default function ReportPage() {
                                         onChange={handleChange}
                                     />
                                     <Input
-                                        placeholder="Local Identification Code"
+                                        placeholder="Postal Code"
                                         name="localId"
                                         value={formData.localId}
                                         onChange={handleChange}
@@ -212,12 +245,21 @@ export default function ReportPage() {
                                         value={formData.duration}
                                         onChange={handleChange}
                                     />
-                                    <Input
-                                        placeholder="Severity of the reaction"
-                                        name="severity"
+                                    <Select
                                         value={formData.severity}
-                                        onChange={handleChange}
-                                    />
+                                        onValueChange={(val) =>
+                                            setFormData({ ...formData, severity: val })
+                                        }
+                                    >
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select severity" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="mild">Mild</SelectItem>
+                                            <SelectItem value="moderate">Moderate</SelectItem>
+                                            <SelectItem value="severe">Severe</SelectItem>
+                                        </SelectContent>
+                                    </Select>
                                     <Textarea
                                         placeholder="Treatments of ADRC"
                                         name="treatment"
@@ -231,7 +273,7 @@ export default function ReportPage() {
                                 type="submit"
                                 className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white"
                             >
-                                Submit Report
+                                {btnText}
                             </Button>
                         </form>
                     </CardContent>

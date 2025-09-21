@@ -5,14 +5,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { getApiClient } from "@/utils/getApiClient"
 
 export default function ReportsPage() {
   const [reports, setReports] = useState([])
   const [selectedReport, setSelectedReport] = useState(null)
+  async  function loadData() {
 
+    const reponse = await getApiClient('/')
+    // setReports(storedReports)
+  }
   useEffect(() => {
-    const storedReports = JSON.parse(localStorage.getItem("reports") || "[]")
-    setReports(storedReports)
+
+    loadData()
   }, [])
 
   return (
@@ -48,8 +53,8 @@ export default function ReportsPage() {
                         <TableCell>{r.severity}</TableCell>
                         <TableCell>{new Date(r.submittedAt).toLocaleDateString()}</TableCell>
                         <TableCell>
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             className="text-green-600 border-green-600 hover:bg-green-50"
                             onClick={() => setSelectedReport(r)}
                           >
