@@ -10,15 +10,23 @@ import { getApiClient } from "@/utils/getApiClient"
 export default function ReportsPage() {
   const [reports, setReports] = useState([])
   const [selectedReport, setSelectedReport] = useState(null)
-  async  function loadData() {
 
-    const reponse = await getApiClient('/')
-    // setReports(storedReports)
+  // Pagination state
+  const [page, setPage] = useState(1)
+  const [limit] = useState(5) // rows per page
+  const [totalPages, setTotalPages] = useState(1)
+
+  async function loadData(p) {
+    const response = await getApiClient(`/api/reports?page=${p}&limit=${limit}`)
+    if (response.status === "success") {
+      setReports(response.data)
+      setTotalPages(response.pagination.totalPages)
+    }
   }
-  useEffect(() => {
 
-    loadData()
-  }, [])
+  useEffect(() => {
+    loadData(page)
+  }, [page])
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-50 to-white p-6 flex justify-center">
@@ -32,40 +40,64 @@ export default function ReportsPage() {
             {reports.length === 0 ? (
               <p className="text-gray-500 text-center">No reports submitted yet.</p>
             ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-green-100">
-                      <TableHead>Patient</TableHead>
-                      <TableHead>Drug</TableHead>
-                      <TableHead>Reaction</TableHead>
-                      <TableHead>Severity</TableHead>
-                      <TableHead>Date Submitted</TableHead>
-                      <TableHead>Action</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {reports.map((r, i) => (
-                      <TableRow key={i}>
-                        <TableCell>{r.age} yrs / {r.sex}</TableCell>
-                        <TableCell>{r.drugName}</TableCell>
-                        <TableCell>{r.symptoms}</TableCell>
-                        <TableCell>{r.severity}</TableCell>
-                        <TableCell>{new Date(r.submittedAt).toLocaleDateString()}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="outline"
-                            className="text-green-600 border-green-600 hover:bg-green-50"
-                            onClick={() => setSelectedReport(r)}
-                          >
-                            View
-                          </Button>
-                        </TableCell>
+              <>
+                {/* Table */}
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow className="bg-green-100">
+                        <TableHead>Patient</TableHead>
+                        <TableHead>Drug</TableHead>
+                        <TableHead>Reaction</TableHead>
+                        <TableHead>Severity</TableHead>
+                        <TableHead>Date Submitted</TableHead>
+                        <TableHead>Action</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+                    </TableHeader>
+                    <TableBody>
+                      {reports.map((r, i) => (
+                        <TableRow key={i}>
+                          <TableCell>{r.age} yrs / {r.sex}</TableCell>
+                          <TableCell>{r.drugName}</TableCell>
+                          <TableCell>{r.symptoms}</TableCell>
+                          <TableCell>{r.severity}</TableCell>
+                          <TableCell>{new Date(r.createdAt).toLocaleDateString()}</TableCell>
+                          <TableCell>
+                            <Button
+                              variant="outline"
+                              className="text-green-600 border-green-600 hover:bg-green-50"
+                              onClick={() => setSelectedReport(r)}
+                            >
+                              View
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="flex justify-between items-center pt-4">
+                  <Button
+                    variant="outline"
+                    disabled={page === 1}
+                    onClick={() => setPage((prev) => prev - 1)}
+                  >
+                    Previous
+                  </Button>
+                  <span className="text-gray-600">
+                    Page {page} of {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    disabled={page === totalPages}
+                    onClick={() => setPage((prev) => prev + 1)}
+                  >
+                    Next
+                  </Button>
+                </div>
+              </>
             )}
           </CardContent>
         </Card>
@@ -113,7 +145,7 @@ export default function ReportsPage() {
               </section>
 
               <p className="text-sm text-gray-500">
-                Submitted on: {new Date(selectedReport.submittedAt).toLocaleString()}
+                Submitted on: {new Date(selectedReport.createdAt).toLocaleString()}
               </p>
             </div>
           )}

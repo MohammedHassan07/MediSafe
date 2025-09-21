@@ -11,7 +11,7 @@ export default function MedicineLibraryPage() {
   const [search, setSearch] = useState("")
   const [results, setResults] = useState([])
   const [selectedMed, setSelectedMed] = useState(null)
-  
+
   // Fetch medicines by search
   const fetchMedicines = async () => {
     const response = await postApiClient("/api/get-medicines", { search })
@@ -26,7 +26,7 @@ export default function MedicineLibraryPage() {
       })
     }
     setResults(response.data)
-    setError(null)
+
   }
 
   // Debounced search
@@ -44,7 +44,10 @@ export default function MedicineLibraryPage() {
 
   const handleSelect = async (id) => {
     const response = await getApiClient(`/api/medicine/${id}`)
-    if (response.status !== "success") return setError(response.message)
+    if (response.status !== "success") return toast.error("Error", {
+      description: response.message,
+      style: { background: "red", color: "white" },
+    })
 
     setSelectedMed(response.data)
     setResults([])

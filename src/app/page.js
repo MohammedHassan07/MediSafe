@@ -65,7 +65,7 @@ export default function Home() {
           {sections.map((section, idx) => (
             <Card
               key={idx}
-              className="shadow-lg hover:shadow-xl transition rounded-2xl"
+              className="shadow-lg hover:shadow-xl transition rounded-2xl "
             >
               <CardHeader>
                 <div className="flex items-center justify-center">{section.icon}</div>
@@ -76,7 +76,7 @@ export default function Home() {
                 <Link href={section.href}>
                   <Button
                     variant="default"
-                    className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white"
+                    className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white hover:cursor-pointer"
                   >
                     {section.protected ? "Login to Access" : "Explore"}
                   </Button>

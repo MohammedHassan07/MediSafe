@@ -1,12 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { useEffect } from "react"
 import postApiClient from "@/utils/postApiClient"
 import { toast } from "sonner"
 import {
@@ -16,17 +15,16 @@ import {
     SelectContent,
     SelectItem,
 } from "@/components/ui/select"
-
-
+import { Loader2 } from "lucide-react"  // spinner icon
 
 export default function ReportPage() {
-
     const router = useRouter()
 
     const [isLoggedIn, setIsLoggedIn] = useState(false)
-    const [btnText, setbtnText] = useState('Submit Report')
-    useEffect(() => {
+    const [loading, setLoading] = useState(false) // NEW loading state
+    const [btnText, setBtnText] = useState("Submit Report")
 
+    useEffect(() => {
         const loggedIn = localStorage.getItem("token")
         if (loggedIn) {
             setIsLoggedIn(true)
@@ -64,67 +62,62 @@ export default function ReportPage() {
             if (!formData[key]) {
                 return toast.error("Error", {
                     description: "Please fill in all fields before submitting.",
-                    style: {
-                        background: "red",
-                        color: "white",
-                    },
-
+                    style: { background: "red", color: "white" },
                 })
             }
         }
 
-        setbtnText('Submitting...')
+        setLoading(true)
+        setBtnText("Submitting...")
 
-        // Get existing reports from localStorage
-        const existingReports = JSON.parse(localStorage.getItem("reports") || "[]")
+        try {
+            // Save to localStorage (optional)
+            const existingReports = JSON.parse(localStorage.getItem("reports") || "[]")
+            const newReports = [
+                ...existingReports,
+                { ...formData, submittedAt: new Date().toISOString() },
+            ]
+            localStorage.setItem("reports", JSON.stringify(newReports))
 
-        // Add new report
-        const newReports = [...existingReports, { ...formData, submittedAt: new Date().toISOString() }]
+            const response = await postApiClient("/api/doctor/submit-report", formData)
 
-        // Save back to localStorage
-        localStorage.setItem("reports", JSON.stringify(newReports))
-
-        const response = await postApiClient('/api/doctor/submit-report', formData)
-        if (response.status !== "success") {
-            return toast.error("Error", {
-                description: response.message || "Internal Server Error",
-                style: {
-                    background: "red",
-                    color: "white",
-                },
-
+            if (response.status !== "success") {
+                toast.error("Error", {
+                    description: response.message || "Internal Server Error",
+                    style: { background: "red", color: "white" },
+                })
+            } else {
+                toast.success("Success", {
+                    description: response.message || "Report Added",
+                    style: { background: "green", color: "white" },
+                })
+            }
+        } catch (error) {
+            toast.error("Error", {
+                description: "Something went wrong",
+                style: { background: "red", color: "white" },
+            })
+        } finally {
+            setLoading(false)
+            setBtnText("Submit Report")
+            setFormData({
+                age: "",
+                sex: "",
+                medicalHistory: "",
+                localId: "",
+                drugName: "",
+                dosage: "",
+                batchNumber: "",
+                startDate: "",
+                stopDate: "",
+                changeDose: "",
+                symptoms: "",
+                onset: "",
+                duration: "",
+                severity: "",
+                treatment: "",
             })
         }
-
-        toast.error("Success", {
-            description: response.message || "Report Added",
-            style: {
-                background: "green",
-                color: "white",
-            },
-
-        })
-
-        setbtnText('Submit Report')
-
-        // Reset form
-        setFormData({
-            age: "",
-            sex: "",
-            medicalHistory: "",
-            localId: "",
-            drugName: "",
-            dosage: "",
-            batchNumber: "",
-            startDate: "",
-            stopDate: "",
-            changeDose: "",
-            symptoms: "",
-            onset: "",
-            duration: "",
-            severity: "",
-            treatment: "",
-        })
     }
 
     return (
@@ -138,8 +131,8 @@ export default function ReportPage() {
                     </CardHeader>
 
                     <CardContent>
-                        
                         <form onSubmit={handleSubmit} className="space-y-8">
+
                             {/* Patient Details */}
                             <section className="space-y-4">
                                 <h3 className="text-lg font-semibold text-green-700">
@@ -271,8 +264,10 @@ export default function ReportPage() {
 
                             <Button
                                 type="submit"
-                                className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white"
+                                className="w-full md:w-auto bg-green-600 hover:bg-green-700 text-white flex items-center gap-2"
+                                disabled={loading} // disable button when loading
                             >
+                                {loading && <Loader2 className="h-5 w-5 animate-spin" />}
                                 {btnText}
                             </Button>
                         </form>
@@ -282,3 +277,5 @@ export default function ReportPage() {
         </main>
     )
 }
+
+
