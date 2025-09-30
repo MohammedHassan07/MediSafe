@@ -16,6 +16,8 @@ export async function POST(request) {
             uses,
             adverseEffect,
             drugImage,
+            ADRC,
+            management
         } = body;
 
         const keys = Object.keys(body)
@@ -54,7 +56,7 @@ export async function POST(request) {
                 }
             )
         }
-        
+
 
         // TODO: Handle Images
         const drugData = {
@@ -66,8 +68,11 @@ export async function POST(request) {
             uses,
             adverseEffect,
             drugImage,
+            ADRC,
+            management
         }
 
+        console.log(drugData)
         const newDrug = await drugModel.create(drugData)
 
         return new Response(JSON.stringify({ status: 'success', message: 'Drug Added', newDrug }), {

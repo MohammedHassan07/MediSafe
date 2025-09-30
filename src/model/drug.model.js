@@ -11,6 +11,8 @@ const DrugSchema = new mongoose.Schema(
     uses: String,
     adverseEffect: String,
     drugImage: String,
+    ADRC: String,
+    management: String,
   },
   { timestamps: true }
 );

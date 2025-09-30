@@ -5,7 +5,7 @@ export async function GET(req, { params }) {
     try {
         await dbConnect()
 
-        const { id } = params;
+        const { id } = await params;
         const medicine = await drugModel.findById({ _id: id })
 
         return new Response(

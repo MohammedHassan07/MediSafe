@@ -21,6 +21,9 @@ const Medicine = () => {
         uses: "",
         adverseEffect: "",
         drugImage: "",
+        ADRC: "",
+        management: "",
+
     })
     // Fetch medicines
     const fetchMedicines = async () => {
@@ -92,6 +95,8 @@ const Medicine = () => {
             uses: "",
             adverseEffect: "",
             drugImage: "",
+            ADRC: "",
+            management: "",
         })
     }
 
@@ -121,10 +126,15 @@ const Medicine = () => {
                 <Textarea placeholder="Adverse Effects" value={medicineForm.adverseEffect}
                     onChange={(e) => setMedicineForm({ ...medicineForm, adverseEffect: e.target.value })}
                 />
+                <Input placeholder="Types of ADRC" value={medicineForm.ADRC}
+                    onChange={(e) => setMedicineForm({ ...medicineForm, ADRC: e.target.value })}
+                />
+                <Input placeholder="Management" value={medicineForm.management}
+                    onChange={(e) => setMedicineForm({ ...medicineForm, management: e.target.value })}
+                />
                 <Input placeholder="Drug Image URL (optional)" value={medicineForm.drugImage}
                     onChange={(e) => setMedicineForm({ ...medicineForm, drugImage: e.target.value })}
                 />
-
                 <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
                     Add Medicine
                 </Button>
@@ -150,6 +160,8 @@ const Medicine = () => {
                         <TableHead>Mechanism</TableHead>
                         <TableHead>Uses</TableHead>
                         <TableHead>Adverse Effects</TableHead>
+                        <TableHead>Types of ADRC</TableHead>
+                        <TableHead>Management</TableHead>
                         <TableHead>Image</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -163,6 +175,9 @@ const Medicine = () => {
                             <TableCell>{m.mechanism}</TableCell>
                             <TableCell>{m.uses}</TableCell>
                             <TableCell>{m.adverseEffect}</TableCell>
+                            <TableCell>{m.ADRC}</TableCell>
+                            <TableCell>{m.management}</TableCell>
+
                             <TableCell>
                                 {m.drugImage ? (
                                     <img src={m.drugImage} alt="drug" className="w-16 h-16 object-cover rounded" />
