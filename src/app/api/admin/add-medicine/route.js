@@ -9,13 +9,13 @@ export async function POST(request) {
         const body = await request.json();
         const {
             drugName,
-            molecularFormula,
-            IUPAC_Name,
-            description,
-            mechanism,
-            uses,
+            // molecularFormula,
+            // IUPAC_Name,
+            // description,
+            // mechanism,
+            // uses,
             adverseEffect,
-            drugImage,
+            // drugImage,
             ADRC,
             management
         } = body;
