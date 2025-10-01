@@ -14,13 +14,13 @@ const Medicine = () => {
     // Medicine Form State
     const [medicineForm, setMedicineForm] = useState({
         drugName: "",
-        molecularFormula: "",
-        IUPAC_Name: "",
-        description: "",
-        mechanism: "",
-        uses: "",
+        // molecularFormula: "",
+        // IUPAC_Name: "",
+        // description: "",
+        // mechanism: "",
+        // uses: "",
+        // drugImage: "",
         adverseEffect: "",
-        drugImage: "",
         ADRC: "",
         management: "",
 
@@ -88,13 +88,13 @@ const Medicine = () => {
         setMedicines(updated)
         setMedicineForm({
             drugName: "",
-            molecularFormula: "",
-            IUPAC_Name: "",
-            description: "",
-            mechanism: "",
-            uses: "",
+            // molecularFormula: "",
+            // IUPAC_Name: "",
+            // description: "",
+            // mechanism: "",
+            // uses: "",
+            // drugImage: "",
             adverseEffect: "",
-            drugImage: "",
             ADRC: "",
             management: "",
         })
@@ -108,7 +108,7 @@ const Medicine = () => {
                 <Input placeholder="Drug Name" value={medicineForm.drugName}
                     onChange={(e) => setMedicineForm({ ...medicineForm, drugName: e.target.value })}
                 />
-                <Input placeholder="Molecular Formula" value={medicineForm.molecularFormula}
+                {/* <Input placeholder="Molecular Formula" value={medicineForm.molecularFormula}
                     onChange={(e) => setMedicineForm({ ...medicineForm, molecularFormula: e.target.value })}
                 />
                 <Input placeholder="IUPAC Name" value={medicineForm.IUPAC_Name}
@@ -122,7 +122,7 @@ const Medicine = () => {
                 />
                 <Textarea placeholder="Uses" value={medicineForm.uses}
                     onChange={(e) => setMedicineForm({ ...medicineForm, uses: e.target.value })}
-                />
+                /> */}
                 <Textarea placeholder="Adverse Effects" value={medicineForm.adverseEffect}
                     onChange={(e) => setMedicineForm({ ...medicineForm, adverseEffect: e.target.value })}
                 />
@@ -132,9 +132,9 @@ const Medicine = () => {
                 <Input placeholder="Management" value={medicineForm.management}
                     onChange={(e) => setMedicineForm({ ...medicineForm, management: e.target.value })}
                 />
-                <Input placeholder="Drug Image URL (optional)" value={medicineForm.drugImage}
+                {/* <Input placeholder="Drug Image URL (optional)" value={medicineForm.drugImage}
                     onChange={(e) => setMedicineForm({ ...medicineForm, drugImage: e.target.value })}
-                />
+                /> */}
                 <Button type="submit" className="bg-green-600 hover:bg-green-700 text-white">
                     Add Medicine
                 </Button>
@@ -154,35 +154,35 @@ const Medicine = () => {
                 <TableHeader>
                     <TableRow>
                         <TableHead>Name</TableHead>
-                        <TableHead>Molecular Formula</TableHead>
+                        {/* <TableHead>Molecular Formula</TableHead>
                         <TableHead>IUPAC</TableHead>
                         <TableHead>Description</TableHead>
                         <TableHead>Mechanism</TableHead>
-                        <TableHead>Uses</TableHead>
-                        <TableHead>Adverse Effects</TableHead>
+                        <TableHead>Uses</TableHead>*/}
+                        <TableHead>Adverse Effects</TableHead> 
                         <TableHead>Types of ADRC</TableHead>
                         <TableHead>Management</TableHead>
-                        <TableHead>Image</TableHead>
+                        {/* <TableHead>Image</TableHead> */}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {medicines.map((m) => (
                         <TableRow key={m._id || m.id}>
                             <TableCell>{m.drugName}</TableCell>
-                            <TableCell>{m.molecularFormula}</TableCell>
+                            {/* <TableCell>{m.molecularFormula}</TableCell>
                             <TableCell>{m.IUPAC_Name}</TableCell>
                             <TableCell>{m.description}</TableCell>
                             <TableCell>{m.mechanism}</TableCell>
-                            <TableCell>{m.uses}</TableCell>
+                            <TableCell>{m.uses}</TableCell> */}
                             <TableCell>{m.adverseEffect}</TableCell>
                             <TableCell>{m.ADRC}</TableCell>
                             <TableCell>{m.management}</TableCell>
-
+{/* 
                             <TableCell>
                                 {m.drugImage ? (
                                     <img src={m.drugImage} alt="drug" className="w-16 h-16 object-cover rounded" />
                                 ) : "—"}
-                            </TableCell>
+                            </TableCell> */}
                         </TableRow>
                     ))}
                 </TableBody>

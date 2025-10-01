@@ -18,12 +18,12 @@ export default function Home() {
       icon: <ClipboardList className="w-8 h-8 text-green-600" />,
       href: "/possible",
     },
-    {
-      title: "Medicine Library",
-      description: "Explore details of drugs including structure, chemical formula, IUPAC name, and medical uses.",
-      icon: <BookOpen className="w-8 h-8 text-green-600" />,
-      href: "/medicine-library",
-    },
+    // {
+    //   title: "Medicine Library",
+    //   description: "Explore details of drugs including structure, chemical formula, IUPAC name, and medical uses.",
+    //   icon: <BookOpen className="w-8 h-8 text-green-600" />,
+    //   href: "/medicine-library",
+    // },
     {
       title: "Report ADR",
       description: "Submit your own obervations view reports (login required).",

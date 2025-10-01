@@ -61,13 +61,13 @@ export async function POST(request) {
         // TODO: Handle Images
         const drugData = {
             drugName,
-            molecularFormula,
-            IUPAC_Name,
-            description,
-            mechanism,
-            uses,
+            // molecularFormula,
+            // IUPAC_Name,
+            // description,
+            // mechanism,
+            // uses,
+            // drugImage,
             adverseEffect,
-            drugImage,
             ADRC,
             management
         }
