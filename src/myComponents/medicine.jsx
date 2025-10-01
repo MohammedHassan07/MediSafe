@@ -52,7 +52,7 @@ const Medicine = () => {
     async function handleAddMedicine(e) {
         e.preventDefault()
 
-        if (!medicineForm.drugName || !medicineForm.description) {
+        if (!medicineForm.drugName) {
             return toast("Validation Error", {
                 description: "Drug name and description are required",
                 style: {
