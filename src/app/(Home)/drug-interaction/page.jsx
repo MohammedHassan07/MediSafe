@@ -104,10 +104,11 @@ export default function DrugInteractionPage() {
                             setDrug1Results([]) // ✅ clear dropdown immediately
                           }}
                         >
-                          {d.drugName}{" "}
+                          {d.drugName}
+                          {/* {" "}
                           <span className="text-xs text-gray-500">
                             ({d.molecularFormula})
-                          </span>
+                          </span> */}
                         </li>
                       ))}
                     </ul>
@@ -134,10 +135,11 @@ export default function DrugInteractionPage() {
                             setDrug2Results([])
                           }}
                         >
-                          {d.drugName}{" "}
+                          {d.drugName}
+                          {/* {" "}
                           <span className="text-xs text-gray-500">
                             ({d.molecularFormula})
-                          </span>
+                          </span> */}
                         </li>
                       ))}
                     </ul>
