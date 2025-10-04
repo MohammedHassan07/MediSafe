@@ -1,43 +1,60 @@
 import dbConnect from "@/lib/connectDB";
 import interactionModel from "@/model/interaction.model";
-import drugModel from "@/model/drug.model";
 
 export async function POST(req) {
-
     const body = await req.json();
-    const { drug1, drug2 } = body
-    console.log(body)
-    let filter = {};
-    await dbConnect()
+    const { drug1, drug2 } = body;
 
-    if (drug1 && drug1.trim() !== "" && drug2 && drug2.trim() !== "") {
-        // Step 1: Find matching drugs
-        const matchingDrugs = await drugModel.find({
-            $or: [
-                { drugName: { $regex: drug1, $options: "i" } },
-                { drugName: { $regex: drug2, $options: "i" } },
-            ],
-        }).select("_id"); // only need IDs
-
-        const drugIds = matchingDrugs.map((d) => d._id);
-
-        // Step 2: Apply filter for interactions
-        filter = {
-            $or: [{ drug1: { $in: drugIds } }, { drug2: { $in: drugIds } }],
-        };
+    if (!drug1 || !drug2) {
+        return new Response(
+            JSON.stringify({
+                status: "failed",
+                message: "Both drug1 and drug2 are required.",
+            }),
+            {
+                status: 400,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
     }
 
-    const interactions = await interactionModel
-        .findOne(filter)
-        .populate({ path: "drug1", select: "drugName molecularFormula" })
-        .populate({ path: "drug2", select: "drugName molecularFormula" });
-    if (!interactions) return new Response(JSON.stringify({ status: 'failed', message: 'Medicines not found' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' }
-    })
+    await dbConnect();
 
-    return new Response(JSON.stringify({ status: 'success', message: 'Medicines Fetched', data: interactions }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-    })
+    // ✅ Find interaction in either order
+    const filter = {
+        $or: [
+            { drug1: drug1, drug2: drug2 },
+            { drug1: drug2, drug2: drug1 },
+        ],
+    };
+
+    const interaction = await interactionModel
+        .findOne(filter)
+        .populate({ path: "drug1", select: "drugName" })
+        .populate({ path: "drug2", select: "drugName" });
+
+    if (!interaction) {
+        return new Response(
+            JSON.stringify({
+                status: "failed",
+                message: "No interaction found between the selected drugs.",
+            }),
+            {
+                status: 404,
+                headers: { "Content-Type": "application/json" },
+            }
+        );
+    }
+
+    return new Response(
+        JSON.stringify({
+            status: "success",
+            message: "Interaction found successfully",
+            data: interaction,
+        }),
+        {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+        }
+    );
 }

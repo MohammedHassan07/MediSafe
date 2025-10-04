@@ -44,7 +44,7 @@ export async function POST(request) {
         const medicine = await drugModel.findOne({ drugName })
 
         if (medicine) {
-            console.log('in if')
+
             return new Response(
                 JSON.stringify({
                     status: "failed",
