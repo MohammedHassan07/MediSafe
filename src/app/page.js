@@ -48,6 +48,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-6">
       <div className="max-w-5xl w-full text-center space-y-6">
+     
         <h1 className="text-4xl font-bold text-green-700">MediSafe</h1>
         <p className="text-gray-600">Smart tools for drug safety and reporting</p>
 
