@@ -117,6 +117,10 @@ export default function DrugInteractionPage() {
                           }}
                         >
                           {d.drugName}
+                          {/* {" "}
+                          <span className="text-xs text-gray-500">
+                            ({d.molecularFormula})
+                          </span> */}
                         </li>
                       ))}
                     </ul>
@@ -149,6 +153,10 @@ export default function DrugInteractionPage() {
                           }}
                         >
                           {d.drugName}
+                          {/* {" "}
+                          <span className="text-xs text-gray-500">
+                            ({d.molecularFormula})
+                          </span> */}
                         </li>
                       ))}
                     </ul>
@@ -176,16 +184,14 @@ export default function DrugInteractionPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="p-4 border rounded-lg bg-white shadow">
                     <h4 className="font-semibold text-green-600">Drug 1</h4>
-                    <p>
-                      <strong>Name:</strong> {results.drug1?.drugName}
-                    </p>
+                    <p><strong>Name:</strong> {results.drug1?.drugName}</p>
+                    {/* <p><strong>Formula:</strong> {results.drug1?.molecularFormula}</p> */}
                   </div>
 
                   <div className="p-4 border rounded-lg bg-white shadow">
                     <h4 className="font-semibold text-green-600">Drug 2</h4>
-                    <p>
-                      <strong>Name:</strong> {results.drug2?.drugName}
-                    </p>
+                    <p><strong>Name:</strong> {results.drug2?.drugName}</p>
+                    {/* <p><strong>Formula:</strong> {results.drug2?.molecularFormula}</p> */}
                   </div>
                 </div>
 
