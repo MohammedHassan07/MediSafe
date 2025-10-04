@@ -1,4 +1,5 @@
 import dbConnect from "@/lib/connectDB";
+import drugModel from "@/model/drug.model";   
 import interactionModel from "@/model/interaction.model";
 
 export async function POST(req) {
