@@ -49,9 +49,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-6">
       {/* Particle Background */}
-      <div className="w-full h-[600px] absolute" >
+      <div className="w-screen h-screen absolute" >
         <Particles
-          particleCount={200}
+          particleCount={3000}
           particleSpread={10}
           speed={0.1}
           particleColors={['#16a34a', '#3b82f6', '#ffffff']}
