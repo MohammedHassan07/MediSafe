@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Pill, FileText, ClipboardList, Eye, User, Shield, BookOpen } from "lucide-react"
 import Link from "next/link"
+import Particles from '../myComponents/ParticleBackground';
 
 export default function Home() {
   const sections = [
@@ -47,8 +48,25 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-green-50 to-white flex flex-col items-center justify-center p-6">
-      <div className="max-w-5xl w-full text-center space-y-6">
-     
+      {/* Particle Background */}
+      <div className="w-full h-[600px] absolute" >
+        <Particles
+          particleCount={200}
+          particleSpread={10}
+          speed={0.1}
+          particleColors={['#16a34a', '#3b82f6', '#ffffff']}
+          moveParticlesOnHover={true}
+          particleHoverFactor={1}
+          alphaParticles={true}
+          particleBaseSize={100}
+          sizeRandomness={1}
+          cameraDistance={20}
+        />
+
+      </div>
+
+      <div className="max-w-5xl w-full text-center space-y-6 relative top-0">
+
         <h1 className="text-4xl font-bold text-green-700">MediSafe</h1>
         <p className="text-gray-600">Smart tools for drug safety and reporting</p>
 
